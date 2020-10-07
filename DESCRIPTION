@@ -1,0 +1,34 @@
+Package: modeltime.ensemble
+Type: Package
+Title: Ensemble Algorithms for Time Series Forecasting with Modeltime
+Version: 0.1.0
+Authors@R: c(
+    person("Matt", "Dancho", email = "mdancho@business-science.io", role = c("aut", "cre")),
+    person("Business Science", role = "cph")
+    )
+Description: 
+    A 'modeltime' extension that implements time series ensemble forecasting methods including model averaging, 
+    weighted averaging, and stacking. These techniques are popular methods 
+    to improve forecast accuracy and stability. Refer to papers such as 
+    "Machine-Learning Models for Sales Time Series Forecasting" Pavlyshenko, B.M. (2019) <doi:10.3390>.
+URL: https://github.com/business-science/modeltime.ensemble
+BugReports: https://github.com/business-science/modeltime.ensemble/issues
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: modeltime (>= 0.2.0), R (>= 3.5)
+Imports: tune, rsample, yardstick, workflows, parsnip, recipes, dials,
+        timetk (>= 2.3.0), tibble, dplyr, tidyr, purrr, glue, stringr,
+        rlang (>= 0.1.2), cli, crayon, utils, generics, magrittr,
+        glmnet, progressr, tictoc
+Suggests: roxygen2, testthat, tidymodels, tidyverse, lubridate, knitr,
+        rmarkdown, covr, remotes
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2020-10-01 18:51:13 UTC; mdancho
+Author: Matt Dancho [aut, cre],
+  Business Science [cph]
+Maintainer: Matt Dancho <mdancho@business-science.io>
+Repository: CRAN
+Date/Publication: 2020-10-07 12:30:06 UTC
