@@ -1,7 +1,7 @@
 Package: modeltime.ensemble
 Type: Package
 Title: Ensemble Algorithms for Time Series Forecasting with Modeltime
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Matt", "Dancho", email = "mdancho@business-science.io", role = c("aut", "cre")),
     person("Business Science", role = "cph")
@@ -26,9 +26,9 @@ Suggests: roxygen2, testthat, tidymodels, tidyverse, lubridate, knitr,
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-10-01 18:51:13 UTC; mdancho
+Packaged: 2020-10-08 15:57:59 UTC; mdanc
 Author: Matt Dancho [aut, cre],
   Business Science [cph]
 Maintainer: Matt Dancho <mdancho@business-science.io>
 Repository: CRAN
-Date/Publication: 2020-10-07 12:30:06 UTC
+Date/Publication: 2020-10-09 10:20:02 UTC

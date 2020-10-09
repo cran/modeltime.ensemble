@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 
 ## ---- echo=F, out.width='100%', fig.align='center'----------------------------
-knitr::include_graphics("stacking_multi_level.jpg")
+knitr::include_graphics("stacking.jpg")
 
 ## ----setup--------------------------------------------------------------------
 # Time Series ML
