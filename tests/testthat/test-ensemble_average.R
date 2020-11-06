@@ -1,5 +1,18 @@
 context("TEST: ensemble_average()")
 
+library(testthat)
+
+# Machine Learning
+library(tidymodels)
+library(modeltime)
+library(modeltime.ensemble)
+library(modeltime.resample)
+
+# Core Packages
+library(tidyverse)
+library(timetk)
+library(lubridate)
+
 # TEST ENSEMBLE AVERAGE ----
 
 # Median ----
@@ -36,6 +49,7 @@ test_that("ensemble_average(type = 'median')", {
     accuracy_tbl <- calibration_tbl %>% modeltime_accuracy()
 
     expect_false(is.na(accuracy_tbl$mae))
+    expect_true(accuracy_tbl$mae < 250)
 
     # Forecast
     forecast_tbl <- calibration_tbl %>%
@@ -48,6 +62,18 @@ test_that("ensemble_average(type = 'median')", {
 
     expect_equal(nrow(forecast_tbl), 24 + n_actual)
     expect_equal(ncol(forecast_tbl), 7)
+
+    # Forecast - Test Keep New Data
+    forecast_tbl <- calibration_tbl %>%
+        modeltime_forecast(
+            new_data    = testing(m750_splits),
+            actual_data = m750,
+            keep_data   = TRUE
+        )
+    # forecast_tbl %>% group_by(id) %>% plot_modeltime_forecast()
+
+    expect_equal(nrow(forecast_tbl), 24 + n_actual)
+    expect_equal(ncol(forecast_tbl), 10)
 
     # Refit
     refit_tbl <- calibration_tbl %>%
@@ -76,6 +102,14 @@ test_that("ensemble_average(type = 'mean')", {
     expect_equal(ensemble_fit_mean$desc, "ENSEMBLE (MEAN): 3 MODELS")
 
 
+    # Forecast
+    fcast <- modeltime_table(ensemble_fit_mean) %>%
+        modeltime_forecast(testing(m750_splits))
+
+    expect_equal(nrow(fcast), nrow(testing(m750_splits)))
+    expect_equal(fcast$.index, testing(m750_splits)$date)
+
+
 })
 
 # Checks/Errors ----
@@ -99,6 +133,8 @@ test_that("Checks/Errors: ensemble_average()", {
 
 
 })
+
+
 
 
 

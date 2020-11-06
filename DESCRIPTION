@@ -1,7 +1,7 @@
 Package: modeltime.ensemble
 Type: Package
 Title: Ensemble Algorithms for Time Series Forecasting with Modeltime
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person("Matt", "Dancho", email = "mdancho@business-science.io", role = c("aut", "cre")),
     person("Business Science", role = "cph")
@@ -16,19 +16,20 @@ BugReports: https://github.com/business-science/modeltime.ensemble/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: modeltime (>= 0.2.0), R (>= 3.5)
+Depends: modeltime (>= 0.3.0), modeltime.resample (>= 0.1.0), R (>=
+        3.5)
 Imports: tune, rsample, yardstick, workflows, parsnip, recipes, dials,
-        timetk (>= 2.3.0), tibble, dplyr, tidyr, purrr, glue, stringr,
-        rlang (>= 0.1.2), cli, crayon, utils, generics, magrittr,
-        glmnet, progressr, tictoc
-Suggests: roxygen2, testthat, tidymodels, tidyverse, lubridate, knitr,
-        rmarkdown, covr, remotes
+        timetk (>= 2.5.0), tibble, dplyr (>= 1.0.0), tidyr, purrr,
+        glue, stringr, rlang (>= 0.1.2), cli, crayon, utils, generics,
+        magrittr, glmnet, progressr, tictoc
+Suggests: roxygen2, testthat, tidymodels, xgboost, tidyverse,
+        lubridate, knitr, rmarkdown, covr, remotes
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-10-08 15:57:59 UTC; mdanc
+Packaged: 2020-11-06 17:32:50 UTC; mdancho
 Author: Matt Dancho [aut, cre],
   Business Science [cph]
 Maintainer: Matt Dancho <mdancho@business-science.io>
 Repository: CRAN
-Date/Publication: 2020-10-09 10:20:02 UTC
+Date/Publication: 2020-11-06 18:00:02 UTC

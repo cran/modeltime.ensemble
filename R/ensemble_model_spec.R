@@ -4,9 +4,9 @@
 #'
 #'
 #' A 2-stage stacking regressor that follows:
-#' 1. Stage 1: Sub-Model's are Trained & Predicted using `modeltime_fit_resamples()`
+#' 1. Stage 1: Sub-Model's are Trained & Predicted using [modeltime.resample::modeltime_fit_resamples()].
 #' 2. Stage 2: A Meta-learner (`model_spec`) is trained on Out-of-Sample Sub-Model
-#'   Predictions using `ensemble_model_spec()`
+#'   Predictions using `ensemble_model_spec()`.
 #'
 #' @param object A Modeltime Table. Used for ensemble sub-models.
 #' @param model_spec A `model_spec` object defining the
@@ -238,17 +238,11 @@ generate_stacking_results <- function(object,
     # - This is now performed separately with modeltime_fit_resamples()
 
     # 2. Wrangle Predictions ----
-    predictions_tbl <- object %>%
-        dplyr::select(-.model) %>%
-        tidyr::unnest(.resample_results) %>%
-        dplyr::select(.model_id, .model_desc, .predictions) %>%
-        tidyr::unnest(.predictions) %>%
-        dplyr::group_split(.model_id) %>%
-        purrr::map( tibble::rowid_to_column, var = ".row_id") %>%
-        dplyr::bind_rows()
+    predictions_tbl <- modeltime.resample::unnest_modeltime_resamples(object)
 
     # Target Variable is the name in the data
-    target_text <- names(predictions_tbl) %>% utils::tail(1)
+    target_text <- predictions_tbl %>%
+        modeltime.resample::get_target_text_from_resamples(column_before_target = ".row")
     target_var  <- rlang::sym(target_text)
 
     predictions_tbl <- predictions_tbl %>%
@@ -405,7 +399,6 @@ generate_stacking_results <- function(object,
     return(ret)
 
 }
-
 
 
 
