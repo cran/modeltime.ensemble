@@ -1,7 +1,7 @@
 Package: modeltime.ensemble
 Type: Package
 Title: Ensemble Algorithms for Time Series Forecasting with Modeltime
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person("Matt", "Dancho", email = "mdancho@business-science.io", role = c("aut", "cre")),
     person("Business Science", role = "cph")
@@ -15,21 +15,21 @@ URL: https://github.com/business-science/modeltime.ensemble
 BugReports: https://github.com/business-science/modeltime.ensemble/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
-Depends: modeltime (>= 0.3.0), modeltime.resample (>= 0.1.0), R (>=
+Depends: modeltime (>= 0.5.1), modeltime.resample (>= 0.1.0), R (>=
         3.5)
-Imports: tune, rsample, yardstick, workflows, parsnip, recipes, dials,
-        timetk (>= 2.5.0), tibble, dplyr (>= 1.0.0), tidyr, purrr,
-        glue, stringr, rlang (>= 0.1.2), cli, crayon, utils, generics,
-        magrittr, glmnet, progressr, tictoc
-Suggests: roxygen2, testthat, tidymodels, xgboost, tidyverse,
+Imports: tune (>= 0.1.2), rsample, yardstick, workflows (>= 0.2.1),
+        parsnip (>= 0.1.4), recipes (>= 0.1.15), dials, timetk (>=
+        2.5.0), tibble, dplyr (>= 1.0.0), tidyr, purrr, glue, stringr,
+        rlang (>= 0.1.2), cli, crayon, utils, generics, magrittr,
+        glmnet, progressr, tictoc
+Suggests: roxygen2, earth, testthat, tidymodels, xgboost, tidyverse,
         lubridate, knitr, rmarkdown, covr, remotes
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-11-06 17:32:50 UTC; mdancho
+Packaged: 2021-04-05 13:48:38 UTC; mdancho
 Author: Matt Dancho [aut, cre],
   Business Science [cph]
 Maintainer: Matt Dancho <mdancho@business-science.io>
 Repository: CRAN
-Date/Publication: 2020-11-06 18:00:02 UTC
+Date/Publication: 2021-04-05 14:20:02 UTC

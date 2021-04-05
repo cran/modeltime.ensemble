@@ -1,3 +1,14 @@
+# modeltime.ensemble 0.4.0
+
+__Recursive Ensembles__
+
+- `recursive()` - The `recursive()` function is extended to recursive ensembles for both single time series and multiple time series models (panel data).
+- ["Forecasting with Recursive Ensembles"](https://business-science.github.io/modeltime.ensemble/articles/recursive-ensembles.html) - A new forecasting vignette for using `recurive()` with ensembles.
+
+__Fixes__
+
+- `modeltime_forecast()` now returns `NA` when missing values are present in the sub-model predictions.  
+
 # modeltime.ensemble 0.3.0
 
 __Panel Data__
