@@ -1,3 +1,7 @@
+# modeltime.ensemble 0.4.1
+
+Minor Release: Requires `modeltime` 0.6.0 and `parsnip` 0.1.6 to align with [xgboost changes](https://github.com/business-science/modeltime/issues/107). 
+
 # modeltime.ensemble 0.4.0
 
 __Recursive Ensembles__
