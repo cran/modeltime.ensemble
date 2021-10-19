@@ -1,3 +1,17 @@
+#  modeltime.ensemble 1.0.0
+
+## NEW Nested Modeltime Ensembles
+
+In `modeltime` 1.0.0, we introduced Nested Forecasting as a way to forecast many time series iteratively. In `modeltime.ensemble` 1.0.0, we introduce nested ensembles that can improve forecasting performance and be applied to many time series iteratively. We have added:
+
+- `ensemble_nested_average()`: Apply average ensembles iteratively
+- `ensemble_nested_weighted()`: Apply weighted ensembles iteratively
+
+
+## New Vignette (Nested Ensembles)
+
+- [Nested Ensembles](https://business-science.github.io/modeltime.ensemble/articles/nested-ensembles.html)
+
 # modeltime.ensemble 0.4.2
 
 ### Compatibility with `modeltime` 0.7.0. 

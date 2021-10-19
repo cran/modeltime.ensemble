@@ -201,7 +201,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_fourier</span>(date, <span class="at">K =</span> <span class="dv">1</span>, <span class="at">period =</span> <span class="dv">12</span>)</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>recipe_spec <span class="sc">%&gt;%</span> <span class="fu">prep</span>() <span class="sc">%&gt;%</span> <span class="fu">juice</span>()</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 282 x 42
+<pre><code>#&gt; # A tibble: 282 × 42
 #&gt;    date       value date_index.num date_year date_half date_quarter date_month
 #&gt;    &lt;date&gt;     &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;        &lt;int&gt;      &lt;int&gt;
 #&gt;  1 1990-01-01  6370          -1.72     -1.66         1            1          1
@@ -220,11 +220,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 #&gt; #   date_mweek &lt;int&gt;, date_week &lt;int&gt;, date_week2 &lt;int&gt;, date_week3 &lt;int&gt;,
 #&gt; #   date_week4 &lt;int&gt;, date_mday7 &lt;int&gt;, date_month.lbl_01 &lt;dbl&gt;,
 #&gt; #   date_month.lbl_02 &lt;dbl&gt;, date_month.lbl_03 &lt;dbl&gt;, date_month.lbl_04 &lt;dbl&gt;,
-#&gt; #   date_month.lbl_05 &lt;dbl&gt;, date_month.lbl_06 &lt;dbl&gt;, date_month.lbl_07 &lt;dbl&gt;,
-#&gt; #   date_month.lbl_08 &lt;dbl&gt;, date_month.lbl_09 &lt;dbl&gt;, date_month.lbl_10 &lt;dbl&gt;,
-#&gt; #   date_month.lbl_11 &lt;dbl&gt;, date_wday.lbl_1 &lt;dbl&gt;, date_wday.lbl_2 &lt;dbl&gt;,
-#&gt; #   date_wday.lbl_3 &lt;dbl&gt;, date_wday.lbl_4 &lt;dbl&gt;, date_wday.lbl_5 &lt;dbl&gt;,
-#&gt; #   date_wday.lbl_6 &lt;dbl&gt;, date_sin12_K1 &lt;dbl&gt;, date_cos12_K1 &lt;dbl&gt;</code></pre>
+#&gt; #   date_month.lbl_05 &lt;dbl&gt;, date_month.lbl_06 &lt;dbl&gt;, …</code></pre>
 </div>
 <div id="model-1---auto-arima" class="section level2">
 <h2>Model 1 - Auto ARIMA</h2>
@@ -277,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>m750_models</span></code></pre></div>
 <pre><code>#&gt; # Modeltime Table
-#&gt; # A tibble: 3 x 3
+#&gt; # A tibble: 3 × 3
 #&gt;   .model_id .model     .model_desc            
 #&gt;       &lt;int&gt; &lt;list&gt;     &lt;chr&gt;                  
 #&gt; 1         1 &lt;workflow&gt; ARIMA(0,1,1)(0,1,1)[12]
@@ -295,7 +291,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 #&gt; Ensemble of 3 Models (MEAN)
 #&gt; 
 #&gt; # Modeltime Table
-#&gt; # A tibble: 3 x 3
+#&gt; # A tibble: 3 × 3
 #&gt;   .model_id .model     .model_desc            
 #&gt;       &lt;int&gt; &lt;list&gt;     &lt;chr&gt;                  
 #&gt; 1         1 &lt;workflow&gt; ARIMA(0,1,1)(0,1,1)[12]
