@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
     # collapse = TRUE,
     message = FALSE, 
@@ -11,17 +11,17 @@ knitr::opts_chunk$set(
     out.width='95%'
 )
 
-## ---- echo=F, out.width='100%', fig.align='center'----------------------------
+## ----echo=F, out.width='100%', fig.align='center'-----------------------------
 knitr::include_graphics("stacking.jpg")
 
-## ----setup--------------------------------------------------------------------
+## ----setup, include=FALSE,echo=FALSE------------------------------------------
 # Time Series ML
 library(tidymodels)
 library(modeltime)
 library(modeltime.ensemble)
 
 # Core
-library(tidyverse)
+library(dplyr)
 library(timetk)
 
 interactive <- FALSE

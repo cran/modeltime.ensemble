@@ -4,7 +4,7 @@
 #'
 #'
 #' A 2-stage stacking regressor that follows:
-#' 1. Stage 1: Sub-Model's are Trained & Predicted using [modeltime.resample::modeltime_fit_resamples()].
+#' 1. Stage 1: Sub-Model's are Trained & Predicted using `modeltime.resample::modeltime_fit_resamples()`.
 #' 2. Stage 2: A Meta-learner (`model_spec`) is trained on Out-of-Sample Sub-Model
 #'   Predictions using `ensemble_model_spec()`.
 #'
@@ -37,7 +37,7 @@
 #'
 #' - Start with a _Modeltime Table_ to define your sub-models.
 #'
-#' - Step 1: Use [modeltime_fit_resamples()] to perform the submodel resampling procedure.
+#' - Step 1: Use `modeltime.resample::modeltime_fit_resamples()` to perform the submodel resampling procedure.
 #'
 #' - Step 2: Use [ensemble_model_spec()] to define and train the meta-learner.
 #'
@@ -46,7 +46,7 @@
 #' The Meta-Learner Ensembling Process uses the following basic steps:
 #'
 #' 1. __Make Cross-Validation Predictions.__
-#'   Cross validation predictions are made for each sub-model with [modeltime_fit_resamples()].
+#'   Cross validation predictions are made for each sub-model with `modeltime.resample::modeltime_fit_resamples()`.
 #'   The out-of-sample sub-model predictions contained in `.resample_results`
 #'   are used as the input to the meta-learner.
 #'
@@ -83,8 +83,9 @@
 #' library(tidymodels)
 #' library(modeltime)
 #' library(modeltime.ensemble)
-#' library(tidyverse)
+#' library(dplyr)
 #' library(timetk)
+#' library(glmnet)
 #'
 #' # Step 1: Make resample predictions for submodels
 #' resamples_tscv <- training(m750_splits) %>%
@@ -146,7 +147,7 @@ ensemble_model_spec <- function(object,
 
     if (rlang::is_missing(model_spec)) rlang::abort("'model_spec' must be provided. Try creating a model_spec using parsnip or modeltime models.")
     if (!inherits(model_spec, "model_spec")) rlang::abort("'model_spec' must be a `model_spec` object. Try creating a model_spec using parsnip or modeltime models.")
-    if (is.null(model_spec$engine)) rlang::abort("'model_spec' does not have an engine set. Try setting an engine using `parsnip::set_engine()`.")
+    if (is.null(model_spec$engine)) cli::cli_abort("'model_spec' does not have an engine set. Try setting an engine using {.fn parsnip::set_engine}.")
 
 
     if (nrow(object) < 2) rlang::abort("An ensemble requires two or more models in the Modeltime Table.")
@@ -213,11 +214,9 @@ print.mdl_time_ensemble_model_spec <- function(x, ...) {
     print(cli::rule("Modeltime Ensemble", width = min(65, cli::console_width())))
 
     desc <- x$fit$fit %>% modeltime::get_model_description()
-    msg  <- glue::glue("Ensemble of {x$n_models} Models ({stringr::str_c(desc, ' STACK')})")
+    msg  <- cli::format_inline("Ensemble of {x$n_models} Models ({stringr::str_c(desc, ' STACK')})")
 
-    print(msg)
-
-    cli::cat_line()
+    cat(msg, "\n\n")
 
     print(x$model_tbl)
 
@@ -311,7 +310,7 @@ generate_stacking_results <- function(object,
             )
         )
 
-        best_params_tbl <- tune_results_tbl %>% tune::show_best(metric, n = 1)
+        best_params_tbl <- tune_results_tbl %>% tune::show_best(metric = metric, n = 1)
 
         if (control$verbose) {
             cli::cli_alert_success("Finished tuning Model Specification.")

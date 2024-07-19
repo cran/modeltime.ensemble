@@ -1,0 +1,321 @@
+---
+title: "Autoregressive Forecasting (Recursive Ensembles)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Autoregressive Forecasting (Recursive Ensembles)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    # collapse = TRUE,
+    message = FALSE, 
+    warning = FALSE,
+    paged.print = FALSE,
+    comment = "#>",
+    fig.width = 8, 
+    fig.height = 4.5,
+    fig.align = 'center',
+    out.width='95%'
+)
+```
+
+# What is a Recursive Model?
+
+A ___recursive model___ uses predictions to generate new values for independent features. These features are typically lags used in __autoregressive models.__
+
+# Why is Recursive needed for Autoregressive Models?
+
+It's important to understand that a recursive model is only needed when using lagged features with a **Lag Size \< Forecast Horizon.** When the lag length is less than the forecast horizon, a problem exists were missing values (`NA`) are generated in the future data.
+
+A solution that `recursive()` implements is to iteratively fill these missing values in with values generated from predictions. This technique can be used for:
+
+1.  **Single ensemble recursive predictions** - Effectively turning any `ensemble` model into an Autoregressive (AR) model
+
+2.  **Panel ensemble recursive predictions** - In many situations we need to forecast **more than one time series**. We can batch-process these with 1 model by processing time series groups as panels. This technique can be extended to recursive forecasting for scalable models (1 model that predicts many time series).
+
+Here's an example of a panel forecast that uses a recursive ensemble with Elastic Net and XGBoost models.
+
+```{r, echo=F}
+knitr::include_graphics("panel-ensemble.png")
+```
+
+# Single Ensemble Recursive Example
+
+> Use single ensembles to forecast a single time series
+
+First, we need to load the necessary libraries:
+
+```{r}
+library(modeltime.ensemble)
+library(modeltime)
+library(tidymodels)
+library(glmnet)
+library(xgboost)
+library(dplyr)
+library(lubridate)
+library(timetk)
+```
+
+Next, we select a forecast horizon of 24 days and extend the data frame with the function `future_frame()`. We do this to create a future dataset, which we can distinguish because its values will be NA.
+
+```{r}
+FORECAST_HORIZON <- 24
+
+m750_extended <- m750 %>%
+    group_by(id) %>%
+    future_frame(
+        .length_out = FORECAST_HORIZON,
+        .bind_data  = TRUE
+    ) %>%
+    ungroup()
+```
+
+The next step is to create a ___Transformer Function___ where we create the lagged variables that our model will use. Notice that we create lags up to our forecast horizon. We could also include rolling features and any number of other "engineered features" based on lags.
+
+```{r}
+lag_transformer <- function(data){
+    data %>%
+        tk_augment_lags(value, .lags = 1:FORECAST_HORIZON)
+}
+
+# Data Preparation
+m750_lagged <- m750_extended %>% lag_transformer()
+m750_lagged
+```
+
+We divide the data set into training dataset and future dataset:
+
+```{r}
+train_data <- m750_lagged %>%
+    filter(!is.na(value)) %>%
+    tidyr::drop_na()
+
+future_data <- m750_lagged %>%
+    filter(is.na(value))
+```
+
+Next, we are going to create two models that we will then join into an ensemble. 
+
+1. The first model is a Linear Regression model 
+2. The second model is a MARS model
+
+In a real scenario, we would typically do a pre-selection work where we would analyze more models and keep those with better performance to make the ensemble.
+
+```{r,eval=rlang::is_installed("earth")}
+model_fit_lm <- linear_reg() %>%
+    set_engine("lm") %>%
+    fit(value ~ ., data = train_data %>% select(-id))
+
+model_fit_mars <- mars("regression") %>%
+    set_engine("earth", endspan = 24) %>%
+    fit(value ~ ., data = train_data %>% select(-id))
+```
+
+The next step is to create an ensemble of type mean (in which the predictions of the two models will be averaged) and right after that we use the `recursive()` function to create the recursive model. 
+
+- The `recursive()` function tells the ensemble to use recursion during the prediction process
+- The recursive model uses the ___Transformer Function___ and `train_tail` to generate transformations (e.g. lags) during the prediction process
+
+You can consult all the information of the function by typing in the console `?modeltime::recursive`.
+
+```{r}
+recursive_ensemble <- modeltime_table(
+    model_fit_lm,
+    model_fit_mars
+) %>%
+    ensemble_average(type = "mean") %>%
+    recursive(
+        transform  = lag_transformer,
+        train_tail = tail(train_data, FORECAST_HORIZON)
+    )
+
+recursive_ensemble
+```
+
+Next, we add the recursive ensemble to the modeltime table, which organizes one or more models prior to forecasting. 
+
+```{r}
+model_tbl <- modeltime_table(
+    recursive_ensemble
+)
+
+model_tbl
+```
+
+Finally, we predict over our dataset and visualize the predictions:
+
+```{r}
+model_tbl %>%
+    modeltime_forecast(
+        new_data    = future_data,
+        actual_data = m750
+    ) %>%
+    plot_modeltime_forecast(
+        .interactive        = FALSE,
+        .conf_interval_show = FALSE,
+    )
+```
+
+# Panel Ensemble Recursive Example
+
+> Use panel ensembles to batch forecast multimple time series
+
+This is a more complex extension of the previous example for forecasting multiple time series in batches. We'll showcase a Weighted Ensemble with XGBoost and GLMNET. 
+
+
+First, we select a forecast horizon of 24 days and extend the data frame with the function `future_frame()`. We do this to create a future dataset, which we can distinguish because its values will be NA.
+
+```{r}
+FORECAST_HORIZON <- 24
+
+m4_extended <- m4_monthly %>%
+    group_by(id) %>%
+    future_frame(
+        .length_out = FORECAST_HORIZON,
+        .bind_data  = TRUE
+    ) %>%
+    ungroup()
+```
+
+Then we create a ___Transformer Function___ that will be in charge of generating the lags for each time series up to each forecasting horizon. Note that this time we use __grouped lags__ to generate lags by group. This is important when we have multiple time series. Make sure to ungroup after the lagging process. 
+
+```{r}
+lag_transformer_grouped <- function(data){
+    data %>%
+        group_by(id) %>%
+        tk_augment_lags(value, .lags = 1:FORECAST_HORIZON) %>%
+        ungroup()
+}
+```
+
+Then, we apply the function and divide the data into training and future set:
+
+```{r}
+m4_lags <- m4_extended %>%
+    lag_transformer_grouped()
+
+m4_lags
+```
+
+We split into training data and future data.
+
+```{r}
+train_data <- m4_lags %>%
+    tidyr::drop_na()
+
+future_data <- m4_lags %>%
+    filter(is.na(value))
+```
+
+Next, we are going to create two models that we will then join into an ensemble. 
+
+1. __The first model is an Elastic Net (GLMNET) model:__ An elastic net applies is an improved version of linear regression that applies a penalty to the lagged regressors preventing bad lags from dominating the results. This can show an improvement versus a standard Linear Regression.
+
+2. __The second model is an XGBOOST model:__ An xgboost model is a tree-based algorithm that is very different in how it models vs a linear model. It's much better for non-linear data (e.g. seasonality). 
+
+```{r}
+model_fit_glmnet <- linear_reg(penalty = 1) %>%
+    set_engine("glmnet") %>%
+    fit(value ~ ., data = train_data)
+
+model_fit_xgboost <- boost_tree("regression", learn_rate = 0.35) %>%
+    set_engine("xgboost") %>%
+    fit(value ~ ., data = train_data)
+```
+
+The next step is to create an ensemble. We'll use a Weighted Ensemble (`ensemble_weighted()`) with a 60/40 loading. Right after that we use the `recursive()` function to create the recursive model. Unlike the previous example:
+
+- We have to pass to the recursive function the argument `id` specifying ID's for each time series group
+- We have to use the `panel_tail()` function to create the train_tail by group.
+
+
+```{r}
+recursive_ensemble_panel <- modeltime_table(
+    model_fit_glmnet,
+    model_fit_xgboost
+) %>%
+    ensemble_weighted(loadings = c(4, 6)) %>%
+    recursive(
+        transform  = lag_transformer_grouped,
+        train_tail = panel_tail(train_data, id, FORECAST_HORIZON),
+        id         = "id"
+    )
+
+recursive_ensemble_panel
+```
+
+Next, we add the recursive ensemble to the modeltime table, which organizes one or more models prior to forecasting. 
+
+```{r}
+model_tbl <- modeltime_table(
+    recursive_ensemble_panel
+)
+
+model_tbl
+```
+
+
+Finally, we forecast over our dataset and visualize the forecast.
+
+```{r}
+model_tbl %>%
+    modeltime_forecast(
+        new_data    = future_data,
+        actual_data = m4_lags,
+        keep_data   = TRUE
+    ) %>%
+    group_by(id) %>%
+    plot_modeltime_forecast(
+        .interactive        = FALSE,
+        .conf_interval_show = FALSE,
+        .facet_ncol         = 2
+    )
+```
+
+# Summary
+
+Recursive modeling can be applied to ensembles. But, this is just a small portion of everything that can be done.... If you want to get all the details, read on!
+
+## Take the High-Performance Forecasting Course
+
+> Become the forecasting expert for your organization
+
+<a href="https://university.business-science.io/p/ds4b-203-r-high-performance-time-series-forecasting/" target="_blank"><img src="https://www.filepicker.io/api/file/bKyqVAi5Qi64sS05QYLk" alt="High-Performance Time Series Forecasting Course" width="100%" style="box-shadow: 0 0 5px 2px rgba(0, 0, 0, .5);"/></a>
+
+[*High-Performance Time Series Course*](https://university.business-science.io/p/ds4b-203-r-high-performance-time-series-forecasting/)
+
+### Time Series is Changing
+
+Time series is changing. **Businesses now need 10,000+ time series forecasts every day.** This is what I call a *High-Performance Time Series Forecasting System (HPTSF)* - Accurate, Robust, and Scalable Forecasting.
+
+**High-Performance Forecasting Systems will save companies by improving accuracy and scalability.** Imagine what will happen to your career if you can provide your organization a "High-Performance Time Series Forecasting System" (HPTSF System).
+
+### How to Learn High-Performance Time Series Forecasting
+
+I teach how to build a HPTFS System in my [**High-Performance Time Series Forecasting Course**](https://university.business-science.io/p/ds4b-203-r-high-performance-time-series-forecasting). You will learn:
+
+-   **Time Series Machine Learning** (cutting-edge) with `Modeltime` - 30+ Models (Prophet, ARIMA, XGBoost, Random Forest, & many more)
+-   **Deep Learning** with `GluonTS` (Competition Winners)
+-   **Time Series Preprocessing**, Noise Reduction, & Anomaly Detection
+-   **Feature engineering** using lagged variables & external regressors
+-   **Hyperparameter Tuning**
+-   **Time series cross-validation**
+-   **Ensembling** Multiple Machine Learning & Univariate Modeling Techniques (Competition Winner)
+-   **Scalable Forecasting** - Forecast 1000+ time series in parallel
+-   and more.
+
+<p class="text-center" style="font-size:24px;">
+
+Become the Time Series Expert for your organization.
+
+</p>
+
+<br>
+
+<p class="text-center" style="font-size:30px;">
+
+<a href="https://university.business-science.io/p/ds4b-203-r-high-performance-time-series-forecasting">Take the High-Performance Time Series Forecasting Course</a>
+
+</p>
