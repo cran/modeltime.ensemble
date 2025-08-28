@@ -1,4 +1,4 @@
-426205b7ecf67896cedf0f28c9908d9e *DESCRIPTION
+a57a506f79501802f180a52da8d06dcc *DESCRIPTION
 0cae6b06c45c3ef997ef89e8a90ef3cc *LICENSE
 1c60975d548e86a24089f545a1840cb1 *NAMESPACE
 03242efd0dd0bffede071fa2c518d9df *NEWS.md
@@ -6,7 +6,7 @@
 5eb5d5a7198e311b530974bda4efdca4 *R/00_imports.R
 100cac91067f565ec15e62efa9acfa02 *R/dev-model_descriptions.R
 0d64fcc870885a4b933fcf2e544598ef *R/ensemble_average.R
-3e4645f0052790e386e656a1f3f0550e *R/ensemble_model_spec.R
+9883ed3b28b08cd27fd6c87354d016c5 *R/ensemble_model_spec.R
 8d0122089a51846ab7d6afe3f1042de0 *R/ensemble_weighted.R
 f5f6b80a4880dbadb5dfe85b760e798b *R/modeltime_calibrate.R
 46b45211ed0a5f7ff7b75b8ab2404db8 *R/modeltime_forecast.R
@@ -22,13 +22,13 @@ aef36400ec77e363298c6c675fb3fe4a *R/utils-pipe.R
 82f9e3720b2e91eaaaa061317d58f792 *build/vignette.rds
 b89d7371b5aa5f5c6eb3dc9f290484c6 *inst/doc/getting-started-with-modeltime-ensemble.R
 57e8e4c9877f8c7b7427e6d8352b7a3b *inst/doc/getting-started-with-modeltime-ensemble.Rmd
-64b2b396a7c6907cf569d4d9b3ea2c3b *inst/doc/getting-started-with-modeltime-ensemble.html
+29b47db201bd510b6a4d1e77ca96a1d7 *inst/doc/getting-started-with-modeltime-ensemble.html
 47dc1e370abb38c3460e0cb474d007b7 *inst/doc/nested-ensembles.R
 5c951a2baf5083e435eb2b6cddb85541 *inst/doc/nested-ensembles.Rmd
-83c10310a2ca5d800ce2f110ab234c69 *inst/doc/nested-ensembles.html
+626c42f907c39749984c54e14b95d41b *inst/doc/nested-ensembles.html
 ea844e3adbe3f9a926237cfa25d42fbe *inst/doc/recursive-ensembles.R
 aa1de705e5650d5e3ad131d29c2a8b4c *inst/doc/recursive-ensembles.Rmd
-d73f3e55fe5551aa61abfadb0eb117e7 *inst/doc/recursive-ensembles.html
+9955b4d2e8567ce36e80be13e16e7b8a *inst/doc/recursive-ensembles.html
 3dcf1b92190f9a5c1b678e53cc9dbfa6 *man/ensemble_average.Rd
 7a3cc399880c82ddfd862b4d9e3dba2f *man/ensemble_model_spec.Rd
 952b43c1ff1a6bd1b848528e485368fd *man/ensemble_nested_average.Rd
