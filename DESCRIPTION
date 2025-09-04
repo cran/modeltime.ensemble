@@ -1,7 +1,7 @@
 Package: modeltime.ensemble
 Type: Package
 Title: Ensemble Algorithms for Time Series Forecasting with Modeltime
-Version: 1.0.5
+Version: 1.1.0
 Authors@R: c(
     person("Matt", "Dancho", email = "mdancho@business-science.io", role = c("aut", "cre")),
     person("Business Science", role = "cph")
@@ -15,9 +15,9 @@ URL: https://business-science.github.io/modeltime.ensemble/,
 BugReports: https://github.com/business-science/modeltime.ensemble/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
-Depends: modeltime (>= 1.2.3), modeltime.resample (>= 0.2.1), R (>=
+Depends: modeltime (>= 1.2.3), modeltime.resample (>= 0.3.0), R (>=
         3.5)
-Imports: tune (>= 0.1.2), rsample, yardstick, workflows (>= 0.2.1),
+Imports: tune (>= 2.0.0), rsample, yardstick, workflows (>= 0.2.1),
         recipes (>= 0.1.15), timetk (>= 2.5.0), tibble, dplyr (>=
         1.0.0), tidyr, purrr, stringr, rlang (>= 0.1.2), cli, generics,
         magrittr, tictoc, parallel, doParallel, foreach, glmnet
@@ -26,9 +26,9 @@ Suggests: gt, dials, utils, earth, testthat, tidymodels, xgboost,
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-08-28 15:36:39 UTC; mdancho
+Packaged: 2025-09-03 16:22:25 UTC; mdancho
 Author: Matt Dancho [aut, cre],
   Business Science [cph]
 Maintainer: Matt Dancho <mdancho@business-science.io>
 Repository: CRAN
-Date/Publication: 2025-08-28 19:10:09 UTC
+Date/Publication: 2025-09-04 08:20:02 UTC
